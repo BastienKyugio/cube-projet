@@ -5,6 +5,7 @@
 #include "EnhancedInputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Engine/Engine.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
