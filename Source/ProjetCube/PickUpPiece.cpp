@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "PickUpPiece.h"
-
+#include "MyCharacter.h"
+#include "Components/SphereComponent.h"
 #include "UObject/ConstructorHelpers.h"
 
 // Sets default values
@@ -21,6 +21,11 @@ APickUpPiece::APickUpPiece()
 	{
 		Mesh->SetStaticMesh(ModeleCylinder.Object);
 	}
+	CollisionComponent = CreateDefaultSubobject<USphereComponent>("CollisionComponent");
+	CollisionComponent->SetupAttachment(Mesh);
+	CollisionComponent->InitSphereRadius(100.f);
+	
+	CollisionComponent->SetCollisionProfileName(TEXT("Trigger"));
 }
 
 // Called when the game starts or when spawned
@@ -29,6 +34,7 @@ void APickUpPiece::BeginPlay()
 	Super::BeginPlay();
 	
 	PositionDepart = GetActorLocation();
+	CollisionComponent->OnComponentBeginOverlap.AddDynamic(this,&APickUpPiece::OnOverlapBegin);
 }
 
 // Called every frame
@@ -49,6 +55,19 @@ void APickUpPiece::Tick(float DeltaTime)
 		FVector NouvellePosition = PositionDepart;
 		NouvellePosition.Z = PositionDepart.Z + Decalage;
 		SetActorLocation(NouvellePosition);
+	}
+}
+
+void APickUpPiece::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,UPrimitiveComponent* OtherComp,int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor && OtherActor != this)
+	{
+		AMyCharacter* PlayerCharacter = Cast<AMyCharacter>(OtherActor);
+		if (PlayerCharacter)
+		{
+			PlayerCharacter->AddPoint(1);
+			Destroy();
+		}
 	}
 }
 

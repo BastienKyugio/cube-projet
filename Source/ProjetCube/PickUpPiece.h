@@ -5,9 +5,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "PickUpPiece.generated.h"
 
+#include "PickUpPiece.generated.h"
+class AMyCharacter;
 class UStaticMeshComponent;
+class USphereComponent;
 
 UCLASS()
 class PROJETCUBE_API APickUpPiece : public AActor
@@ -37,6 +39,12 @@ protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Cours")
 	float VitesseFlottement = 2.f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Cours")
+	USphereComponent* CollisionComponent;
+	
+	UFUNCTION()
+	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,int32 OhterBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	
 private:
 	FVector PositionDepart;
